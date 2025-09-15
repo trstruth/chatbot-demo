@@ -21,6 +21,9 @@ import json
 import os
 import sys
 from urllib import request, error
+import ssl
+
+context = ssl._create_unverified_context()
 
 
 def _require_env(name: str) -> str:
@@ -58,7 +61,7 @@ def chat_completion(messages):
     data = json.dumps(payload).encode("utf-8")
     req = request.Request(url, data=data, headers=headers, method="POST")
     try:
-        with request.urlopen(req) as resp:
+        with request.urlopen(req, context=context) as resp:
             body = resp.read().decode("utf-8")
             obj = json.loads(body)
     except error.HTTPError as e:
